@@ -1,83 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using EnergTestTask.BL.Interfaces;
+using EnergTestTask.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EnergTestTask.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class FieldsController : Controller
     {
-        // GET: FieldsController
-        public ActionResult Index()
+        private readonly IKmlFieldsService _fieldsService;
+        public FieldsController(IKmlFieldsService fieldsService)
         {
-            return View();
+            _fieldsService = fieldsService;
+        }
+        // GET: All fields
+        [HttpGet]
+        public List<Field> GetFields()
+        {
+            return _fieldsService.GetFields();
         }
 
         // GET: FieldsController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("{id}")]
+        public int? GetSizeById(int id)
         {
-            return View();
-        }
-
-        // GET: FieldsController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: FieldsController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: FieldsController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: FieldsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: FieldsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: FieldsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return _fieldsService.GetSizeById(id);
         }
     }
 }
