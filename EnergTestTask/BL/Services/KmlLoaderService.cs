@@ -8,24 +8,32 @@ namespace EnergTestTask.BL.Services
     public class KmlLoaderService : IKmlLoaderService
     {
         private readonly List<Field> _fields;
+        private readonly Dictionary<int, double[]> _centroids;
 
         private const string FieldsPath = "source/fields.kml";
         private const string CentroidsPath = "source/centroids.kml";
 
         public KmlLoaderService()
         {
+            _centroids = LoadAndParseCentroids();
             _fields = LoadAndParseFields();
         }
 
         public List<Field> GetFields() => _fields;
+        public Dictionary<int, double[]> GetCentroids() => _centroids;
 
         public Field? GetFieldById(int id)
             => _fields.FirstOrDefault(f => f.Id == id);
 
-        private List<Field> LoadAndParseFields()
+        private Dictionary<int, double[]> LoadAndParseCentroids()
         {
             var centroids = ParseCentroids(CentroidsPath);
-            var fields = ParseFields(FieldsPath, centroids);
+            return centroids;
+        }
+
+        private List<Field> LoadAndParseFields()
+        {
+            var fields = ParseFields(FieldsPath, _centroids);
 
             return fields;
         }

@@ -27,5 +27,12 @@ namespace EnergTestTask.Controllers
         {
             return _fieldsService.GetSizeById(id);
         }
+
+        [HttpGet("distance")]
+        public double GetDistance([FromQuery] int id, [FromQuery] double pointLat, [FromQuery] double pointLng)
+        {
+            var point = new double[] {pointLat, pointLng };
+            return _fieldsService.GetDistanceFromCenterToPoint(point, id);
+        }
     }
 }

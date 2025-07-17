@@ -6,5 +6,6 @@ namespace EnergTestTask.BL.Interfaces
     {
         List<Field> GetFields();
         Field? GetFieldById(int Id);
+        Dictionary<int, double[]> GetCentroids();
     }
 }
