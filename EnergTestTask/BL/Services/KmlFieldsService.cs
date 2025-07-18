@@ -1,6 +1,8 @@
 ﻿using EnergTestTask.BL.Interfaces;
 using EnergTestTask.Models;
 using NetTopologySuite.Geometries;
+using ProjNet;
+using ProjNet.CoordinateSystems;
 
 namespace EnergTestTask.BL.Services
 {
@@ -52,9 +54,42 @@ namespace EnergTestTask.BL.Services
             return _fields.FirstOrDefault(f => f.Id == Id)?.Size;
         }
 
-        public bool IsPointInArea(double[] point)
+        public (int Id, string Name)? IsPointInArea(double[] point)
         {
-            throw new NotImplementedException();
+            var geomFactory = new GeometryFactory(new PrecisionModel(), 4326);
+
+            var wgs84 = GeographicCoordinateSystem.WGS84;
+            var utmZone = ProjectedCoordinateSystem.WGS84_UTM(32, true);
+
+            var ctFactory = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
+            var transform = ctFactory.CreateFromCoordinateSystems(wgs84, utmZone);
+
+            var testPoint = geomFactory.CreatePoint(new Coordinate(point[1], point[0]));
+            var testPointCoords = transform.MathTransform.Transform(new[] { testPoint.X, testPoint.Y });
+            var transformedPoint = geomFactory.CreatePoint(new Coordinate(testPointCoords[0], testPointCoords[1]));
+
+            foreach (var field in _fields)
+            {
+                foreach (var location in field.Locations)
+                {
+                    var coords = location.Polygon
+                        .Select(p => new Coordinate(p[1], p[0]))
+                        .Select(c => transform.MathTransform.Transform(new[] { c.X, c.Y }))
+                        .Select(c => new Coordinate(c[0], c[1]))
+                        .ToArray();
+
+                    if (!coords.First().Equals2D(coords.Last(), 1e-6))
+                        coords = coords.Append(coords.First()).ToArray();
+
+                    var ring = geomFactory.CreateLinearRing(coords);
+                    var polygon = geomFactory.CreatePolygon(ring);
+
+                    if (polygon.Contains(transformedPoint) || polygon.Intersects(transformedPoint))
+                        return (field.Id, field.Name);
+                }
+            }
+
+            return null;
         }
     }
 }

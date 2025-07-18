@@ -7,6 +7,6 @@ namespace EnergTestTask.BL.Interfaces
         public List<Field> GetFields();
         public int? GetSizeById(int Id);
         public double GetDistanceFromCenterToPoint(double[] point, int id);
-        public bool IsPointInArea(double[] point);
+        public (int Id, string Name)? IsPointInArea(double[] point);
     }
 }

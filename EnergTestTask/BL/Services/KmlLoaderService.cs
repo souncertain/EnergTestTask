@@ -59,8 +59,8 @@ namespace EnergTestTask.BL.Services
                 {
                     result[fid] = new[]
                     {
-                    point.Coordinate.Latitude,
-                    point.Coordinate.Longitude
+                    point.Coordinate.Longitude,
+                    point.Coordinate.Latitude
                 };
                 }
             }
@@ -93,7 +93,7 @@ namespace EnergTestTask.BL.Services
                         continue;
 
                     var coordList = polygon.OuterBoundary.LinearRing.Coordinates
-                        .Select(c => new double[] { c.Latitude, c.Longitude })
+                        .Select(c => new double[] { c.Longitude, c.Latitude})
                         .ToList();
 
                     int size = Int32.Parse(schemaData.SimpleData

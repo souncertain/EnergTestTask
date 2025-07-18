@@ -34,5 +34,18 @@ namespace EnergTestTask.Controllers
             var point = new double[] {pointLat, pointLng };
             return _fieldsService.GetDistanceFromCenterToPoint(point, id);
         }
+
+        [HttpGet("IsInArea")]
+        public IActionResult PointInField([FromQuery] double pointLat, [FromQuery] double pointLng)
+        {
+            var point = new double[] { pointLat, pointLng };
+            var result = _fieldsService.IsPointInArea(point);
+
+            if (result is null)
+                return Ok(false);
+
+            return Ok(new { id = result.Value.Id, name = result.Value.Name });
+        }
+
     }
 }
