@@ -46,6 +46,41 @@ namespace EnergTestTask.BL.Services
 
         public List<Field> GetFields()
         {
+            foreach (Field field in _fields)
+            {
+                if(field.Id % 2 == 0)
+                {
+                    List<Departament> deps = new List<Departament>();
+                    foreach (var departament in Enum.GetValues(typeof(RassvetDeps)))
+                    {
+                        var departament2 = new Departament() { Id = (int)departament, Name = departament.ToString() };
+                        deps.Add(departament2);
+                    }
+                    field.Organization = new Organization()
+                    {
+                        Id = (int)Organizations.Rassvet,
+                        Name = Organizations.Rassvet.ToString(),
+                        Departaments = deps
+                    };
+                }
+                else
+                {
+                    List<Departament>deps = new List<Departament>();
+
+                    foreach(var departament in Enum.GetValues(typeof(ZariaDeps)))
+                    {
+                        var departament2 = new Departament() { Id = (int)departament, Name = departament.ToString() };
+                        deps.Add(departament2);
+                    }
+
+                    field.Organization = new Organization()
+                    {
+                        Id = (int)Organizations.Zaria,
+                        Name = Organizations.Zaria.ToString(),
+                        Departaments = deps
+                    };
+                }
+            }
             return _fields;
         }
 

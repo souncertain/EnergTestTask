@@ -16,17 +16,22 @@ namespace EnergTestTask.Controllers
         }
         // GET: All fields
         [HttpGet]
-        public List<Field> GetFields()
+        public IActionResult GetFields()
         {
-            return _fieldsService.GetFields();
+            return Ok(_fieldsService.GetFields());
         }
 
         // GET: FieldsController/Details/5
         [HttpGet("{id}")]
-        public int? GetSizeById(int id)
+        public IActionResult GetSizeById(int id)
         {
-            return _fieldsService.GetSizeById(id);
+            var size = _fieldsService.GetSizeById(id);
+            if (size == null)
+                return NotFound();
+
+            return Ok(size);
         }
+
 
         [HttpGet("distance")]
         public double GetDistance([FromQuery] int id, [FromQuery] double pointLat, [FromQuery] double pointLng)
